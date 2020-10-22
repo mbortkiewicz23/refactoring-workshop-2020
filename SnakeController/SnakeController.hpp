@@ -48,6 +48,9 @@ private:
 
     Direction m_currentDirection;
     std::list<Segment> m_segments;
+
+    Segment calculateHeadPosition(const Segment& oldHead); 
+    DisplayInd buildDisplayInd(int x, int y, Cell cell);
 };
 
 } // namespace Snake
