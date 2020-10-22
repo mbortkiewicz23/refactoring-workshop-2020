@@ -5,7 +5,7 @@
 
 #include "EventT.hpp"
 #include "IPort.hpp"
-
+// comment
 namespace Snake
 {
 ConfigurationError::ConfigurationError()
