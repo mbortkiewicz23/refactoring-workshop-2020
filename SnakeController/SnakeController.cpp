@@ -31,7 +31,7 @@ Controller::Controller(IPort& p_displayPort, IPort& p_foodPort, IPort& p_scorePo
 
     if (w == 'W' and f == 'F' and s == 'S') {
         m_mapDimension = std::make_pair(width, height);
-        m_foodPosition = std::make_pair(foodX, foodY);
+        m_foodPosition = Segment(foodX, foodY);
 
         istr >> d;
         switch (d) {
@@ -75,7 +75,7 @@ bool Controller::isPositionOutsideMap(int x, int y) const
 
 void Controller::sendPlaceNewFood(int x, int y)
 {
-    m_foodPosition = std::make_pair(x, y);
+    m_foodPosition = {x, y};
 
     DisplayInd placeNewFood;
     placeNewFood.x = x;
@@ -88,8 +88,8 @@ void Controller::sendPlaceNewFood(int x, int y)
 void Controller::sendClearOldFood()
 {
     DisplayInd clearOldFood;
-    clearOldFood.x = m_foodPosition.first;
-    clearOldFood.y = m_foodPosition.second;
+    clearOldFood.x = m_foodPosition.x;
+    clearOldFood.y = m_foodPosition.y;
     clearOldFood.value = Cell_FREE;
 
     m_displayPort.send(std::make_unique<EventT<DisplayInd>>(clearOldFood));
@@ -157,7 +157,7 @@ void Controller::addHeadSegment(Segment const& newHead)
 
 void Controller::removeTailSegmentIfNotScored(Segment const& newHead)
 {
-    if (std::make_pair(newHead.x, newHead.y) == m_foodPosition) {
+    if (Segment(newHead.x, newHead.y) == m_foodPosition) {
         m_scorePort.send(std::make_unique<EventT<ScoreInd>>());
         m_foodPort.send(std::make_unique<EventT<FoodReq>>());
     } else {
@@ -241,6 +241,11 @@ void Controller::receive(std::unique_ptr<Event> e)
         default:
             throw UnexpectedEventException();
     }
+}
+
+bool Controller::Segment::operator==(const Segment& obj)
+{
+    return this->x == obj.x && this->y == obj.y;
 }
 
 } // namespace Snake

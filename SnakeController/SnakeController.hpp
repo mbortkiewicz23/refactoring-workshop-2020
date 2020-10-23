@@ -37,14 +37,18 @@ private:
     IPort& m_foodPort;
     IPort& m_scorePort;
 
-    std::pair<int, int> m_mapDimension;
-    std::pair<int, int> m_foodPosition;
-
     struct Segment
     {
         int x;
         int y;
+
+        Segment() = default;
+        Segment(int x, int y) : x(x), y(y) {};
+        bool operator==(const Segment& obj);
     };
+
+    std::pair<int, int> m_mapDimension;
+    Segment m_foodPosition;
 
     std::list<Segment> m_segments;
     Direction m_currentDirection;
