@@ -6,6 +6,7 @@
 
 #include "IEventHandler.hpp"
 #include "SnakeInterface.hpp"
+#include "SnakeHelperController.hpp"
 
 class Event;
 class IPort;
@@ -20,6 +21,15 @@ struct ConfigurationError : std::logic_error
 struct UnexpectedEventException : std::runtime_error
 {
     UnexpectedEventException();
+};
+
+struct Segment
+{
+    int x;
+    int y;
+    Segment() = default;
+    Segment(int x, int y) : x(x), y(y) {};
+    bool operator==(const Segment& obj);
 };
 
 class Controller : public IEventHandler
@@ -37,15 +47,7 @@ private:
     IPort& m_foodPort;
     IPort& m_scorePort;
 
-    struct Segment
-    {
-        int x;
-        int y;
-
-        Segment() = default;
-        Segment(int x, int y) : x(x), y(y) {};
-        bool operator==(const Segment& obj);
-    };
+    SnakeHelperController snakeHelper;
 
     std::pair<int, int> m_mapDimension;
     Segment m_foodPosition;
@@ -60,11 +62,11 @@ private:
     void handlePauseInd(std::unique_ptr<Event>);
 
     bool isSegmentAtPosition(int x, int y) const;
-    Segment calculateNewHead() const;
-    void updateSegmentsIfSuccessfullMove(Segment const& newHead);
+    /*Segment calculateNewHead() const;   
     void addHeadSegment(Segment const& newHead);
     void removeTailSegmentIfNotScored(Segment const& newHead);
-    void removeTailSegment();
+    void removeTailSegment();*/
+    void updateSegmentsIfSuccessfullMove(Segment const& newHead);
 
     bool isPositionOutsideMap(int x, int y) const;
 
